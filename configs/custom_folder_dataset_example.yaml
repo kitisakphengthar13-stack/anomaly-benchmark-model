@@ -178,7 +178,7 @@ plots:
   confusion_matrix:
     enabled: true
     show_values: true
-    colorbar: true
+    colorbar: false
 
   threshold_sweep:
     enabled: true

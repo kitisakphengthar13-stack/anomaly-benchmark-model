@@ -46,36 +46,124 @@ def _format_pct(value: float) -> str:
     return f"{value * 100:.2f}%"
 
 
+def _row_percentages(matrix: list[list[int]]) -> list[list[float]]:
+    percentages: list[list[float]] = []
+    for row in matrix:
+        total = sum(row)
+        if total == 0:
+            percentages.append([0.0 for _ in row])
+        else:
+            percentages.append([value / total for value in row])
+    return percentages
+
+
 def plot_confusion_matrix(df: pd.DataFrame, output_path: Path, config: PlotsConfig) -> None:
     table = confusion_matrix_table(df).iloc[0]
-    matrix = [[table["tn"], table["fp"]], [table["fn"], table["tp"]]]
-    labels = [
-        [f"TN\n{table['tn']}\nGood -> Good", f"FP\n{table['fp']}\nGood -> Bad"],
-        [f"FN\n{table['fn']}\nBad -> Good", f"TP\n{table['tp']}\nBad -> Bad"],
+
+    matrix = [
+        [table["tn"], table["fp"]],
+        [table["fn"], table["tp"]],
     ]
+
+    row_pct = _row_percentages(matrix)
+
+    labels = [
+        [
+            f"TN\n{table['tn']}\n{row_pct[0][0] * 100:.2f}%",
+            f"FP\n{table['fp']}\n{row_pct[0][1] * 100:.2f}%",
+        ],
+        [
+            f"FN\n{table['fn']}\n{row_pct[1][0] * 100:.2f}%",
+            f"TP\n{table['tp']}\n{row_pct[1][1] * 100:.2f}%",
+        ],
+    ]
+
     metrics = scalar_metrics(df)
+
     fig, ax = _figure(config)
-    image = ax.imshow(matrix, cmap="Blues")
+
+    max_value = max(max(row) for row in matrix) or 1
+
+    image = ax.imshow(
+        matrix,
+        cmap="Blues",
+        vmin=0,
+        vmax=max_value * 1.35,
+    )
+
+    metrics_text = (
+        f"Accuracy {_format_pct(metrics['accuracy'])} | "
+        f"Precision {_format_pct(metrics['precision'])} | "
+        f"Recall {_format_pct(metrics['recall'])} | "
+        f"F1 {_format_pct(metrics['f1'])}"
+    )
+
+    fig.suptitle(
+        "Confusion Matrix",
+        fontsize=20,
+        fontweight="semibold",
+        y=0.945,
+    )
+
+    fig.text(
+        0.5,
+        0.885,
+        metrics_text,
+        ha="center",
+        va="center",
+        fontsize=11,
+        fontweight="normal",
+        color="#555555",
+    )
+
     ax.set_xticks([0, 1], labels=["Pred good", "Pred bad"])
     ax.set_yticks([0, 1], labels=["True good", "True bad"])
-    ax.set_xlabel("Prediction")
-    ax.set_ylabel("Ground Truth")
-    ax.set_title(
-        "Confusion Matrix\n"
-        f"Accuracy: {_format_pct(metrics['accuracy'])} | "
-        f"Precision: {_format_pct(metrics['precision'])} | "
-        f"Recall: {_format_pct(metrics['recall'])} | "
-        f"F1: {_format_pct(metrics['f1'])}"
+
+    ax.tick_params(axis="both", labelsize=11)
+
+    ax.set_xlabel(
+        "Prediction",
+        fontsize=12,
+        fontweight="normal",
+        labelpad=10,
     )
+
+    ax.set_ylabel(
+        "Ground Truth",
+        fontsize=12,
+        fontweight="normal",
+        labelpad=10,
+    )
+
     if config.confusion_matrix.show_values:
-        max_value = max(max(row) for row in matrix) or 1
         for y in range(2):
             for x in range(2):
-                text_color = "white" if matrix[y][x] > max_value * 0.5 else "black"
-                ax.text(x, y, labels[y][x], ha="center", va="center", color=text_color, fontsize=11, fontweight="bold")
+                cell_value = matrix[y][x]
+
+                text_color = "white" if cell_value > max_value * 0.55 else "black"
+
+                ax.text(
+                    x,
+                    y,
+                    labels[y][x],
+                    ha="center",
+                    va="center",
+                    color=text_color,
+                    fontsize=13,
+                    fontweight="normal",
+                    linespacing=1.15,
+                )
+
     if config.confusion_matrix.colorbar:
         fig.colorbar(image, ax=ax)
-    fig.tight_layout()
+
+    fig.subplots_adjust(
+        top=0.77,
+        bottom=0.12,
+        left=0.16,
+        right=0.92,
+    )
+
     fig.savefig(output_path)
     plt.close(fig)
 
@@ -114,7 +202,7 @@ def plot_score_distribution(df: pd.DataFrame, output_path: Path, config: PlotsCo
     )
     ax.set_xlabel("Anomaly Score")
     ax.set_ylabel("Image Count")
-    ax.set_title("Anomaly Score Distribution")
+    ax.set_title("Good vs Bad Score Distribution")
     ax.legend()
     fig.tight_layout()
     fig.savefig(output_path)
@@ -125,7 +213,7 @@ def plot_per_image_score(df: pd.DataFrame, output_path: Path, config: PlotsConfi
     plot_df = df.dropna(subset=["score", "y_true"]).copy()
     if config.per_image_score.sort_by_score:
         plot_df = plot_df.sort_values("score", ascending=True).reset_index(drop=True)
-        title = "Sorted Per-image Anomaly Scores"
+        title = "Sorted Image Scores by Anomaly Level"
         xlabel = "Images sorted by anomaly score"
     else:
         plot_df = plot_df.reset_index(drop=True)

@@ -132,7 +132,7 @@ class PerImageScorePlotConfig(BaseModel):
 class ConfusionMatrixPlotConfig(BaseModel):
     enabled: bool = True
     show_values: bool = True
-    colorbar: bool = True
+    colorbar: bool = False
 
 
 class ThresholdSweepPlotConfig(BaseModel):
