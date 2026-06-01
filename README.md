@@ -32,7 +32,7 @@ Then run the CLI:
 
 ```powershell
 abm --help
-abm validate-config --config configs/mvtecad_patchcore_example.yaml
+abm validate-config --config configs/anomalib_dataset_example.yaml
 abm list-models
 abm list-datasets
 ```
@@ -45,16 +45,22 @@ The full CLI name is also available:
 
 ```powershell
 anomaly-benchmark-model --help
-anomaly-benchmark-model run --config configs/cable_patchcore.yaml
 ```
 
 Anomalib 2.5.0 and its backend dependencies must be available in the active Python environment.
 
 ## Config Policy
 
-Official repository examples use the suffix `_example.yaml` and contain placeholder paths only.
+There are exactly two official tracked example YAML files:
 
-User-created configs are ignored by default because they usually contain local dataset paths, checkpoint paths, and output paths. Real local configs can be named like:
+- `configs/anomalib_dataset_example.yaml`
+- `configs/custom_folder_dataset_example.yaml`
+
+Use `configs/anomalib_dataset_example.yaml` for Anomalib built-in datamodules such as `MVTecAD`, `Visa`, `BTech`, `Kolektor`, `MPDD`, `RealIAD`, `MVTecLOCO`, `MVTecAD2`, `Datumaro`, or `VAD`.
+
+Use `configs/custom_folder_dataset_example.yaml` for user-owned folder datasets through Anomalib `Folder`.
+
+Real local configs are ignored by Git because they usually contain local dataset paths, checkpoint paths, and output paths. Local config names can include:
 
 - `configs/cable_patchcore.yaml`
 - `configs/transistor_patchcore.yaml`
@@ -63,39 +69,41 @@ User-created configs are ignored by default because they usually contain local d
 
 These local configs will not be committed.
 
-To create a real local config, copy an example:
+## Quick Start
+
+For a built-in Anomalib dataset:
 
 ```powershell
-copy configs/mvtecad_patchcore_example.yaml configs/cable_patchcore.yaml
+copy configs/anomalib_dataset_example.yaml configs/cable_patchcore.yaml
+abm validate-config --config configs/cable_patchcore.yaml
+abm run --config configs/cable_patchcore.yaml
 ```
 
-Then edit:
+For a custom folder dataset:
 
-- `model.checkpoint`
-- `dataset.root`
-- `dataset.category`
+```powershell
+copy configs/custom_folder_dataset_example.yaml configs/my_product_patchcore.yaml
+abm validate-config --config configs/my_product_patchcore.yaml
+abm run --config configs/my_product_patchcore.yaml
+```
+
+After copying an example, edit:
+
+- `project.name`
 - `project.output_dir`
+- `model.name` or `model.class_path`
+- `model.checkpoint`
+- `dataset.name` or `dataset.class_path`
+- `dataset.root`
+- `dataset.category` for built-in datasets
+- `dataset.normal_dir`, `dataset.abnormal_dir`, and `dataset.mask_dir` for `Folder`
 
 Validate official examples with placeholder paths:
 
 ```powershell
-abm validate-config --config configs/mvtecad_patchcore_example.yaml
+abm validate-config --config configs/anomalib_dataset_example.yaml
+abm validate-config --config configs/custom_folder_dataset_example.yaml
 ```
-
-Run real benchmarks with your local config:
-
-```powershell
-abm run --config configs/cable_patchcore.yaml
-```
-
-## Example Configs
-
-- `configs/folder_custom_example.yaml`: custom dataset with Anomalib `Folder`.
-- `configs/mvtecad_patchcore_example.yaml`: MVTecAD with Patchcore.
-- `configs/visa_reverse_distillation_example.yaml`: Visa with ReverseDistillation.
-- `configs/generic_model_class_path_example.yaml`: model resolved by `model.class_path`.
-- `configs/generic_dataset_class_path_example.yaml`: datamodule resolved by `dataset.class_path`.
-- `configs/use_model_threshold_example.yaml`: report using Anomalib-produced labels directly.
 
 ## CLI
 
@@ -115,7 +123,7 @@ abm run `
 Other commands:
 
 ```powershell
-abm validate-config --config configs/mvtecad_patchcore_example.yaml
+abm validate-config --config configs/anomalib_dataset_example.yaml
 abm list-models
 abm list-datasets
 ```
@@ -129,7 +137,7 @@ PowerShell:
 ```powershell
 $env:PYTHONPATH="src"
 python -m abm.cli --help
-python -m abm.cli validate-config --config configs/mvtecad_patchcore_example.yaml
+python -m abm.cli validate-config --config configs/anomalib_dataset_example.yaml
 python -m abm.cli run --config configs/cable_patchcore.yaml
 ```
 

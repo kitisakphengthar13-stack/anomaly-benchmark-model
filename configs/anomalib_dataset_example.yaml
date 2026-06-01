@@ -1,0 +1,250 @@
+# anomaly-benchmark-model example: built-in Anomalib dataset
+#
+# This official example is tracked by Git.
+#
+# Use this file when your dataset is an Anomalib-supported datamodule,
+# for example:
+#   MVTecAD, Visa, BTech, Kolektor, MPDD, RealIAD, MVTecLOCO,
+#   MVTecAD2, Datumaro, VAD, etc.
+#
+# To create a real local config:
+#
+#   PowerShell:
+#     copy configs/anomalib_dataset_example.yaml configs/cable_patchcore.yaml
+#
+#   CMD:
+#     copy configs\anomalib_dataset_example.yaml configs\cable_patchcore.yaml
+#
+#   Bash/Linux/macOS:
+#     cp configs/anomalib_dataset_example.yaml configs/cable_patchcore.yaml
+#
+# Then edit:
+#   - project.name
+#   - project.output_dir
+#   - model.name or model.class_path
+#   - model.checkpoint
+#   - dataset.name or dataset.class_path
+#   - dataset.root
+#   - dataset.category
+#
+# Local configs such as configs/cable_patchcore.yaml are ignored by Git.
+
+# ---------------------------------------------------------------------
+# MODEL NOTES
+# ---------------------------------------------------------------------
+#
+# Choose one registered Anomalib model name.
+#
+# Common examples:
+#   Patchcore
+#   ReverseDistillation
+#   Padim
+#   Fastflow
+#   EfficientAd
+#   Stfpm
+#   Cflow
+#   Csflow
+#   Cfa
+#   Dfkde
+#   Dfm
+#   Draem
+#   Dsr
+#   Fre
+#   Ganomaly
+#   Uflow
+#   WinClip
+#   Dinomaly
+#   PatchFlow
+#   GeneralAd
+#   L2Bt
+#
+# Anomalib documentation may list additional image models depending on
+# the installed version, such as:
+#   AnomalyVFM, AnomalyDINO, CFA, CFM, C-Flow, CS-Flow, DFKDE, DFM,
+#   Dinomaly, DRAEM, DSR, EfficientAD, INP-Former, FastFlow, FRE,
+#   GANomaly, GLASS, GeneralAD, L2BT, PaDiM, Patchcore, PatchFlow,
+#   Reverse Distillation, STFPM, SuperSimpleNet, U-Flow, UniNet,
+#   VLM-AD, WinCLIP.
+#
+# Display names in documentation may not always match Python class names.
+# If model.name does not resolve, use model.class_path.
+#
+# Example class_path mode:
+#
+# model:
+#   name: null
+#   class_path: anomalib.models.Padim
+#   checkpoint: D:/path/to/padim_model.ckpt
+#   init_args: {}
+#
+# Important:
+# model.init_args must match how the checkpoint was trained.
+
+# ---------------------------------------------------------------------
+# DATASET MODE: Built-in Anomalib dataset/datamodule
+# ---------------------------------------------------------------------
+#
+# Use dataset.name for Anomalib datamodules.
+#
+# Common examples:
+#   MVTecAD
+#   Visa
+#   BTech
+#   Kolektor
+#   MPDD
+#   RealIAD
+#   MVTecLOCO
+#   MVTecAD2
+#   Datumaro
+#   VAD
+#
+# If dataset.name does not resolve, use dataset.class_path.
+#
+# Example class_path mode:
+#
+# dataset:
+#   name: null
+#   class_path: anomalib.data.MVTecAD
+#   root: D:/path/to/MVTecAD
+#   category: cable
+#   init_args: {}
+#
+# The exact constructor arguments depend on the installed Anomalib version.
+# This tool filters dataset kwargs against the datamodule constructor.
+
+# ---------------------------------------------------------------------
+# CHECKPOINT SUPPORT
+# ---------------------------------------------------------------------
+#
+# v0.1 supports PyTorch/Lightning-family checkpoint files:
+#   .ckpt
+#   .pt
+#   .pth
+#
+# Lightning .ckpt is recommended.
+#
+# ONNX/OpenVINO/TensorRT/exported deployment formats are out of scope:
+#   .onnx
+#   .xml
+#   .bin
+#   .engine
+#   .trt
+
+project:
+  name: anomalib_dataset_example
+  output_dir: outputs/anomalib_dataset_example
+
+engine:
+  accelerator: auto
+  devices: 1
+  logger: false
+  enable_checkpointing: true
+  default_root_dir: null
+  init_args: {}
+
+model:
+  # Active example: registered Anomalib model name.
+  name: Patchcore
+
+  # Alternative: use class_path instead of name.
+  # Example:
+  #   name: null
+  #   class_path: anomalib.models.Padim
+  class_path: null
+
+  checkpoint: D:/path/to/model.ckpt
+
+  # Model-specific constructor args.
+  # These must match how the checkpoint was trained.
+  init_args: {}
+
+dataset:
+  # Active example: built-in Anomalib datamodule.
+  name: MVTecAD
+
+  # Alternative: use class_path instead of name.
+  # Example:
+  #   name: null
+  #   class_path: anomalib.data.MVTecAD
+  class_path: null
+
+  root: D:/path/to/MVTecAD
+
+  # Example MVTecAD categories:
+  #   bottle, cable, capsule, carpet, grid, hazelnut, leather,
+  #   metal_nut, pill, screw, tile, toothbrush, transistor, wood, zipper
+  #
+  # Example Visa categories:
+  #   candle, capsules, cashew, chewinggum, fryum,
+  #   macaroni1, macaroni2, pcb1, pcb2, pcb3, pcb4, pipe_fryum
+  category: cable
+
+  # These are null for most built-in Anomalib datasets.
+  normal_dir: null
+  abnormal_dir: null
+  normal_test_dir: null
+  mask_dir: null
+
+  eval_batch_size: 16
+
+  # Windows users should start with 0 to avoid multiprocessing surprises.
+  num_workers: 0
+
+  strict_args: true
+
+  label_from_path:
+    normal_tokens: ["good", "normal", "ok"]
+    abnormal_tokens: ["bad", "defect", "anomaly", "abnormal"]
+
+  init_args: {}
+
+benchmark:
+  threshold:
+    # Options:
+    #   best_f1
+    #   manual
+    #   use_model_threshold
+    method: best_f1
+    manual_value: null
+    num_thresholds: 1000
+
+outputs:
+  save_csv: true
+  save_plots: true
+  save_report_md: true
+  create_zip: true
+
+plots:
+  enabled: true
+  dpi: 200
+  figure_size: [9, 6]
+  theme: default
+
+  colors:
+    good: "#ff7f0e"
+    bad: "#1f77b4"
+    threshold: "#d62728"
+    correct: "#2ca02c"
+    wrong: "#d62728"
+
+  score_distribution:
+    enabled: true
+    kind: histogram
+    bins: 40
+    alpha: 0.55
+
+  per_image_score:
+    enabled: true
+    kind: scatter
+    alpha: 0.65
+    marker_size: 35
+    sort_by_score: true
+
+  confusion_matrix:
+    enabled: true
+    show_values: true
+    colorbar: true
+
+  threshold_sweep:
+    enabled: true
+    kind: line

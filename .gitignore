@@ -62,6 +62,5 @@ configs/*.local.yaml
 configs/*.local.yml
 
 # Track only official example configs.
-!configs/*_example.yaml
-!configs/*_example.yml
-!configs/README.md
+!configs/anomalib_dataset_example.yaml
+!configs/custom_folder_dataset_example.yaml

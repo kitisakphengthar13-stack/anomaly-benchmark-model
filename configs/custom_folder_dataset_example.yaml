@@ -1,0 +1,185 @@
+# anomaly-benchmark-model example: custom folder dataset
+#
+# This official example is tracked by Git.
+#
+# Use this file when your dataset is not one of Anomalib's named public
+# datamodules and you want to use Anomalib Folder for a custom image dataset.
+#
+# To create a real local config:
+#
+#   PowerShell:
+#     copy configs/custom_folder_dataset_example.yaml configs/my_product_patchcore.yaml
+#
+#   CMD:
+#     copy configs\custom_folder_dataset_example.yaml configs\my_product_patchcore.yaml
+#
+#   Bash/Linux/macOS:
+#     cp configs/custom_folder_dataset_example.yaml configs/my_product_patchcore.yaml
+#
+# Then edit:
+#   - project.name
+#   - project.output_dir
+#   - model.name or model.class_path
+#   - model.checkpoint
+#   - dataset.root
+#   - dataset.normal_dir
+#   - dataset.abnormal_dir
+#   - dataset.mask_dir, if masks exist
+#
+# Local configs such as configs/my_product_patchcore.yaml are ignored by Git.
+
+# ---------------------------------------------------------------------
+# CUSTOM DATASET USING ANOMALIB FOLDER
+# ---------------------------------------------------------------------
+#
+# Folder is the recommended mode for custom folder-based image datasets.
+#
+# Example folder layout:
+#
+# D:/path/to/custom_dataset/
+#   good/
+#     img001.png
+#     img002.png
+#   bad/
+#     scratch/
+#       img101.png
+#     broken/
+#       img201.png
+#   masks/
+#     scratch/
+#       img101.png
+#     broken/
+#       img201.png
+#
+# Basic meaning:
+#   normal_dir: folder containing normal/good images
+#   abnormal_dir: folder containing abnormal/defect images
+#   normal_test_dir: optional separate normal test folder
+#   mask_dir: optional segmentation mask folder
+#
+# If masks are not available, set:
+#   mask_dir: null
+#
+# The exact Folder constructor can differ by Anomalib version.
+# This tool filters dataset kwargs against the datamodule constructor.
+
+# ---------------------------------------------------------------------
+# MODEL NOTES
+# ---------------------------------------------------------------------
+#
+# Use model.name for registered Anomalib models:
+#   Patchcore, ReverseDistillation, Padim, Fastflow, EfficientAd, Stfpm, etc.
+#
+# If model.name does not resolve, use model.class_path:
+#
+# model:
+#   name: null
+#   class_path: anomalib.models.Padim
+#   checkpoint: D:/path/to/padim_model.ckpt
+#   init_args: {}
+
+# ---------------------------------------------------------------------
+# ADVANCED CUSTOM DATAMODULE MODE
+# ---------------------------------------------------------------------
+#
+# If Folder is not enough and you already have an Anomalib-compatible
+# datamodule class, use dataset.class_path in your local config:
+#
+# dataset:
+#   name: null
+#   class_path: my_package.my_dataset.MyAnomalibDataModule
+#   root: D:/path/to/custom_dataset
+#   category: null
+#   init_args:
+#     some_custom_arg: value
+#
+# Do not activate multiple dataset blocks at once.
+
+project:
+  name: custom_folder_dataset_example
+  output_dir: outputs/custom_folder_dataset_example
+
+engine:
+  accelerator: auto
+  devices: 1
+  logger: false
+  enable_checkpointing: true
+  default_root_dir: null
+  init_args: {}
+
+model:
+  name: Patchcore
+  class_path: null
+  checkpoint: D:/path/to/model.ckpt
+  init_args: {}
+
+dataset:
+  name: Folder
+  class_path: null
+
+  root: D:/path/to/custom_dataset
+  category: null
+
+  normal_dir: good
+  abnormal_dir: bad
+  normal_test_dir: null
+
+  # Set this to null if pixel-level masks are not available.
+  mask_dir: masks
+
+  eval_batch_size: 16
+  num_workers: 0
+  strict_args: true
+
+  label_from_path:
+    normal_tokens: ["good", "normal", "ok"]
+    abnormal_tokens: ["bad", "defect", "anomaly", "abnormal"]
+
+  init_args: {}
+
+benchmark:
+  threshold:
+    method: best_f1
+    manual_value: null
+    num_thresholds: 1000
+
+outputs:
+  save_csv: true
+  save_plots: true
+  save_report_md: true
+  create_zip: true
+
+plots:
+  enabled: true
+  dpi: 200
+  figure_size: [9, 6]
+  theme: default
+
+  colors:
+    good: "#ff7f0e"
+    bad: "#1f77b4"
+    threshold: "#d62728"
+    correct: "#2ca02c"
+    wrong: "#d62728"
+
+  score_distribution:
+    enabled: true
+    kind: histogram
+    bins: 40
+    alpha: 0.55
+
+  per_image_score:
+    enabled: true
+    kind: scatter
+    alpha: 0.65
+    marker_size: 35
+    sort_by_score: true
+
+  confusion_matrix:
+    enabled: true
+    show_values: true
+    colorbar: true
+
+  threshold_sweep:
+    enabled: true
+    kind: line

@@ -48,6 +48,12 @@ def test_cli_overrides_merge():
 
 
 def test_load_example_config():
-    cfg = load_config(Path("configs/mvtecad_patchcore_example.yaml"))
-    assert cfg.project.name == "mvtecad_patchcore_example"
+    cfg = load_config(Path("configs/anomalib_dataset_example.yaml"))
+    assert cfg.project.name == "anomalib_dataset_example"
     assert cfg.model.name == "Patchcore"
+
+
+def test_load_custom_folder_example_config():
+    cfg = load_config(Path("configs/custom_folder_dataset_example.yaml"))
+    assert cfg.project.name == "custom_folder_dataset_example"
+    assert cfg.dataset.name == "Folder"
