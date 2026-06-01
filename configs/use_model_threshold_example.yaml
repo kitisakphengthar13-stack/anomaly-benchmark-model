@@ -1,0 +1,76 @@
+project:
+  name: use_model_threshold_example
+  output_dir: outputs/use_model_threshold_example
+
+engine:
+  accelerator: auto
+  devices: 1
+  logger: false
+  enable_checkpointing: true
+  default_root_dir: null
+  init_args: {}
+
+model:
+  name: Patchcore
+  class_path: null
+  checkpoint: D:/path/to/model.ckpt
+  init_args: {}
+
+dataset:
+  name: MVTecAD
+  class_path: null
+  root: D:/path/to/MVTecAD
+  category: cable
+  normal_dir: null
+  abnormal_dir: null
+  normal_test_dir: null
+  mask_dir: null
+  eval_batch_size: 16
+  num_workers: 0
+  strict_args: true
+  label_from_path:
+    normal_tokens: ["good", "normal", "ok"]
+    abnormal_tokens: ["bad", "defect", "anomaly", "abnormal"]
+  init_args: {}
+
+benchmark:
+  threshold:
+    method: use_model_threshold
+    manual_value: null
+    num_thresholds: 1000
+
+outputs:
+  save_csv: true
+  save_plots: true
+  save_report_md: true
+  create_zip: true
+
+plots:
+  enabled: true
+  dpi: 200
+  figure_size: [9, 6]
+  theme: default
+  colors:
+    good: "#ff7f0e"
+    bad: "#1f77b4"
+    threshold: "#d62728"
+    correct: "#2ca02c"
+    wrong: "#d62728"
+  score_distribution:
+    enabled: true
+    kind: histogram
+    bins: 40
+    alpha: 0.55
+  per_image_score:
+    enabled: true
+    kind: scatter
+    alpha: 0.65
+    marker_size: 35
+    sort_by_score: true
+  confusion_matrix:
+    enabled: true
+    show_values: true
+    colorbar: true
+  threshold_sweep:
+    enabled: true
+    kind: line

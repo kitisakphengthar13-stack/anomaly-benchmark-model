@@ -1,6 +1,6 @@
 project:
-  name: patchcore_custom_product
-  output_dir: outputs/patchcore_custom_product
+  name: generic_dataset_class_path_example
+  output_dir: outputs/generic_dataset_class_path_example
 
 engine:
   accelerator: auto
@@ -13,18 +13,18 @@ engine:
 model:
   name: Patchcore
   class_path: null
-  checkpoint: D:/models/patchcore/model.ckpt
+  checkpoint: D:/path/to/model.ckpt
   init_args: {}
 
 dataset:
-  name: Folder
-  class_path: null
-  root: D:/datasets/custom_product
-  category: null
-  normal_dir: good
-  abnormal_dir: bad
+  name: null
+  class_path: anomalib.data.MVTecAD
+  root: D:/path/to/MVTecAD
+  category: transistor
+  normal_dir: null
+  abnormal_dir: null
   normal_test_dir: null
-  mask_dir: masks
+  mask_dir: null
   eval_batch_size: 16
   num_workers: 0
   strict_args: true
@@ -61,11 +61,12 @@ plots:
     kind: histogram
     bins: 40
     alpha: 0.55
-  confidence_vs_score:
+  per_image_score:
     enabled: true
     kind: scatter
     alpha: 0.65
     marker_size: 35
+    sort_by_score: true
   confusion_matrix:
     enabled: true
     show_values: true

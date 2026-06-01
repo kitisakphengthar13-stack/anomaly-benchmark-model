@@ -68,7 +68,13 @@ def run_benchmark(config: BenchmarkConfig) -> BenchmarkResult:
             defect_breakdown=breakdown,
         )
     if config.outputs.save_plots:
-        result.plot_paths = save_plots(per_image_with_threshold, threshold_result.sweep, output_dir, config.plots)
+        result.plot_paths = save_plots(
+            per_image_with_threshold,
+            threshold_result.sweep,
+            output_dir,
+            config.plots,
+            threshold_result.threshold,
+        )
     if config.outputs.save_report_md:
         markdown = generate_markdown_report(
             project_name=config.project.name,

@@ -52,7 +52,16 @@ data/
 datasets/
 
 # Config files
+# Ignore all user/local configs by default.
+configs/*.yaml
+configs/*.yml
+configs/local/
+configs/local*.yaml
+configs/local*.yml
+configs/*.local.yaml
+configs/*.local.yml
+
 # Track only official example configs.
-configs/*
-!configs/generic_class_path_example.yaml
-!configs/patchcore_folder_example.yaml
+!configs/*_example.yaml
+!configs/*_example.yml
+!configs/README.md

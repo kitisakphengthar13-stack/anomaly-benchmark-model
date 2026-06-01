@@ -1,6 +1,6 @@
 project:
-  name: padim_mvtecad_bottle
-  output_dir: outputs/padim_mvtecad_bottle
+  name: visa_reverse_distillation_example
+  output_dir: outputs/visa_reverse_distillation_example
 
 engine:
   accelerator: auto
@@ -11,16 +11,16 @@ engine:
   init_args: {}
 
 model:
-  name: null
-  class_path: anomalib.models.Padim
-  checkpoint: D:/models/padim/model.ckpt
+  name: ReverseDistillation
+  class_path: null
+  checkpoint: D:/path/to/reverse_distillation_visa_model.ckpt
   init_args: {}
 
 dataset:
-  name: null
-  class_path: anomalib.data.MVTecAD
-  root: D:/datasets/MVTecAD
-  category: bottle
+  name: Visa
+  class_path: null
+  root: D:/path/to/Visa
+  category: capsules
   normal_dir: null
   abnormal_dir: null
   normal_test_dir: null
@@ -61,11 +61,12 @@ plots:
     kind: histogram
     bins: 40
     alpha: 0.55
-  confidence_vs_score:
+  per_image_score:
     enabled: true
     kind: scatter
     alpha: 0.65
     marker_size: 35
+    sort_by_score: true
   confusion_matrix:
     enabled: true
     show_values: true

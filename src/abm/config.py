@@ -111,6 +111,7 @@ class PlotColorsConfig(BaseModel):
     threshold: str = "#d62728"
     correct: str = "#2ca02c"
     wrong: str = "#d62728"
+    false_negative: str = "#111111"
 
 
 class ScoreDistributionPlotConfig(BaseModel):
@@ -120,11 +121,12 @@ class ScoreDistributionPlotConfig(BaseModel):
     alpha: float = 0.55
 
 
-class ConfidenceVsScorePlotConfig(BaseModel):
+class PerImageScorePlotConfig(BaseModel):
     enabled: bool = True
     kind: Literal["scatter"] = "scatter"
     alpha: float = 0.65
     marker_size: int = 35
+    sort_by_score: bool = True
 
 
 class ConfusionMatrixPlotConfig(BaseModel):
@@ -145,7 +147,7 @@ class PlotsConfig(BaseModel):
     theme: Literal["default"] = "default"
     colors: PlotColorsConfig = Field(default_factory=PlotColorsConfig)
     score_distribution: ScoreDistributionPlotConfig = Field(default_factory=ScoreDistributionPlotConfig)
-    confidence_vs_score: ConfidenceVsScorePlotConfig = Field(default_factory=ConfidenceVsScorePlotConfig)
+    per_image_score: PerImageScorePlotConfig = Field(default_factory=PerImageScorePlotConfig)
     confusion_matrix: ConfusionMatrixPlotConfig = Field(default_factory=ConfusionMatrixPlotConfig)
     threshold_sweep: ThresholdSweepPlotConfig = Field(default_factory=ThresholdSweepPlotConfig)
 

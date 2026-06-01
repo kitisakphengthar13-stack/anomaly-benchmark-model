@@ -48,6 +48,6 @@ def test_cli_overrides_merge():
 
 
 def test_load_example_config():
-    cfg = load_config(Path("configs/rd_visa_capsules.yaml"))
-    assert cfg.project.name == "rd_visa_capsules"
-    assert cfg.model.name == "ReverseDistillation"
+    cfg = load_config(Path("configs/mvtecad_patchcore_example.yaml"))
+    assert cfg.project.name == "mvtecad_patchcore_example"
+    assert cfg.model.name == "Patchcore"

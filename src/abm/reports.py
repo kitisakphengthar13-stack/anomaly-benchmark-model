@@ -105,6 +105,13 @@ def generate_markdown_report(
             "Review false positives first when unnecessary rejection or manual inspection load is the main issue. "
             "Use the threshold sweep as report-level analysis only; Anomalib remains the source of model predictions.",
             "",
+            "## Plot Files",
+            "",
+            "- `confusion_matrix.png`: counts of correct and wrong image-level decisions.",
+            "- `score_distribution.png`: separation between good and bad anomaly scores.",
+            "- `per_image_score.png`: sorted image scores with false positives and false negatives highlighted.",
+            "- `threshold_sweep.png`: precision, recall, and F1 across report-level thresholds.",
+            "",
         ]
     )
     return "\n".join(lines)
