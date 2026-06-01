@@ -50,3 +50,9 @@ mlruns/
 # Large datasets/data folders
 data/
 datasets/
+
+# Config files
+# Track only official example configs.
+configs/*
+!configs/generic_class_path_example.yaml
+!configs/patchcore_folder_example.yaml
