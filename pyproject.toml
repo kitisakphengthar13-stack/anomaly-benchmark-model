@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "anomaly-benchmark-model"
+version = "0.1.0"
+description = "CLI-first benchmark and reporting tool for Anomalib anomaly detection models."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "anomaly-benchmark-model contributors" }
+]
+dependencies = [
+  "anomalib>=2.5.0,<2.6.0",
+  "torch",
+  "lightning",
+  "pandas",
+  "numpy",
+  "scikit-learn",
+  "matplotlib",
+  "pydantic>=2",
+  "pyyaml",
+  "typer",
+  "rich",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+]
+
+[project.scripts]
+anomaly-benchmark-model = "abm.cli:app"
+abm = "abm.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/abm"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+markers = [
+  "anomalib_integration: tests that require Anomalib checkpoints or real datasets",
+]

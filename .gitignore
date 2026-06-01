@@ -1,0 +1,52 @@
+# Python cache/build
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project generated outputs
+outputs/
+benchmark_outputs/
+*.zip
+.pytest_tmp/
+
+# Anomalib/Lightning run artifacts
+lightning_logs/
+results/
+wandb/
+mlruns/
+
+# Large model/checkpoint/export artifacts
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.xml
+*.bin
+
+# Large datasets/data folders
+data/
+datasets/
